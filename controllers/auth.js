@@ -1,9 +1,9 @@
 import { validationResult } from 'express-validator'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import User from './models/User.js'
-import Role from './models/Role.js'
-import config from './config.js'
+import User from '../models/User.js'
+import Role from '../models/Role.js'
+import config from '../config.js'
 
 class AuthController {
 
@@ -16,7 +16,7 @@ class AuthController {
             const {username, password} = req.body
             const candidate = await User.findOne({username})
             if (candidate) {
-                return res.status(400).json({message: 'User with similar name already exists'})
+                return res.status(409).json({message: 'User with similar name already exists'})
             }
             const hashedPassword = bcrypt.hashSync(password, 7)
             const userRole = await Role.findOne({value: 'USER'})
@@ -40,7 +40,7 @@ class AuthController {
             if (!validPassword) {
                 return res.status(400).json({message: `Wrong password`})
             }
-            const token = generateAccessToken(user._id, user.roles)
+            const token = generateAccessToken(user._id, user.username, user.roles)
             return res.json({token})
         } catch (error) {
             console.log(error)
@@ -59,9 +59,10 @@ class AuthController {
 
 }
 
-const generateAccessToken = (id, roles) => {
+const generateAccessToken = (id, username, roles) => {
     const payload = {
         id,
+        username,
         roles
     }
     return jwt.sign(payload, config.secret, { expiresIn: "24h" })
