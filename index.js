@@ -2,12 +2,19 @@ import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import morgan from 'morgan'
+import passport from 'passport'
+import jwtPassport from './middleware/passport.js'
 import config from './config.js'
 import authRouter from './routes/auth.js'
 
 const app = express()
 
 const PORT = process.env.PORT || 5000
+// const require = createRequire(import.meta.url)
+
+app.use(passport.initialize())
+jwtPassport(passport)
+// require('./middleware/passport')(passport)
 
 app.use(morgan('dev'))
 app.use(cors())

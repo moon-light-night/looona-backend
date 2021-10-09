@@ -1,4 +1,5 @@
 import Router from "express"
+import passport from "passport"
 import controller from '../controllers/auth.js'
 import authMiddleware from '../middleware/authMiddleware.js'
 import roleMiddleware from '../middleware/roleMiddleware.js'
@@ -12,5 +13,11 @@ router.post('/registration', [
 ], controller.registration)
 router.post('/login', controller.login)
 router.get('/users', [authMiddleware, roleMiddleware(['ADMIN'])], controller.getUsers)
+
+router.get('/documentation', passport.authenticate('jwt', {session: false}))
+// router.get('/documentation')
+router.get('/about')
+router.get('/contacts')
+router.get('/looona')
 
 export default router

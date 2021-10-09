@@ -41,7 +41,7 @@ class AuthController {
                 return res.status(400).json({message: `Wrong password`})
             }
             const token = generateAccessToken(user._id, user.username, user.roles)
-            return res.json({token})
+            return res.json({token: `Bearer ${token}`})
         } catch (error) {
             console.log(error)
             res.status(400).json({message: 'Login error'})
