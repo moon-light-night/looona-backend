@@ -12,12 +12,10 @@ router.post('/registration', [
     check('password', `Field <password> must be between 4 and 10 symbols`).isLength({min: 4, max: 10})
 ], controller.registration)
 router.post('/login', controller.login)
-router.get('/users', [authMiddleware, roleMiddleware(['ADMIN'])], controller.getUsers)
-
-router.get('/documentation', passport.authenticate('jwt', {session: false}))
-// router.get('/documentation')
-router.get('/about')
-router.get('/contacts')
-router.get('/looona')
+router.get('/users', [
+    authMiddleware,
+    roleMiddleware(['ADMIN']),
+    passport.authenticate('jwt', {session: false})
+], controller.getUsers)
 
 export default router
